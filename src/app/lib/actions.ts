@@ -43,22 +43,38 @@ export async function sendMessage(userId:number, username:string, image:string, 
         mainPart: formData.get('mainPart')
     })
 
-    //adding message
+    // //adding message
+    // const { data, error } = await supabase
+    // .from('messages')
+    // .insert([
+    // { description: mainPart==='' ? " " : mainPart, userIdForThisMessage: userId },
+    // ])
+    // if(error){
+    //     console.log(error)
+    // }
+    // //adding user to users database
+    // // ** The BUG - User is not immediately getting pushed to DB at the time of message insertion
+    // const { data: users, error: error_new } = await supabase
+    // .from('users')
+    // .insert([
+    // { id: userId, username: username, image: image}, 
+    // ])
+    // if(error_new){
+    //     console.log(error)
+    // }
+    // Adding user to users database
+    await supabase.from('users').insert([
+        { id: userId, username: username, image: image}, 
+    ]);
+
+    // Adding message
     const { data, error } = await supabase
-    .from('messages')
-    .insert([
-    { description: mainPart==='' ? " " : mainPart, userIdForThisMessage: userId },
-    ])
+        .from('messages')
+        .insert([
+            { description: mainPart==='' ? " " : mainPart, userIdForThisMessage: userId },
+        ]);
+
     if(error){
-        console.log(error)
-    }
-    //adding user to users database
-    const { data: users, error: error_new } = await supabase
-    .from('users')
-    .insert([
-    { id: userId, username: username, image: image}, 
-    ])
-    if(error_new){
         console.log(error)
     }
 
